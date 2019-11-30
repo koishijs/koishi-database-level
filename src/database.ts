@@ -26,7 +26,7 @@ class LevelDatabase {
   public userDB: LevelUp
   public groupDB: LevelUp
 
-  constructor({ path }: LevelConfig) {
+  constructor ({ path }: LevelConfig) {
     this.baseDB = levelup(leveldown(path))
 
     this.userDB = this.separate({ name: 'user', keyEncoding: 'json', valueEncoding: 'json' })
