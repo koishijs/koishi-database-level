@@ -14,7 +14,7 @@ injectMethods('level', {
     return data || fallback
   },
 
-  getAllGroups (_keys = groupFields, assignees = assigneeIds) {
+  getAllGroups (_, assignees = assigneeIds) {
     return new Promise<GroupData[]>(resolve => {
       const groups: GroupData[] = []
       this.groupDB.createValueStream()
