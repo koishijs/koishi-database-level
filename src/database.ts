@@ -1,27 +1,27 @@
 import { registerSubdatabase } from 'koishi-core'
 
 import leveldown from 'leveldown'
-import levelup, { LevelUp, LevelUpChain } from 'levelup'
+import levelup, { LevelUp } from 'levelup'
 import sub from 'subleveldown'
 
-type LevelConfig = {
+interface LevelConfig {
   path: string
 }
 
-type encodings = 'utf8' | 'json' | 'binary' | 'hex' | 'ascii' | 'base64' | 'ucs2' | 'utf16le' | 'utf-16le' | 'none'
+type Encodings = 'utf8' | 'json' | 'binary' | 'hex' | 'ascii' | 'base64' | 'ucs2' | 'utf16le' | 'utf-16le' | 'none'
 
-type CodecEncoder = {
+interface CodecEncoder {
   encode: (val: any) => any
   decode: (val: any) => any
   buffer: boolean
   type: string
 }
 
-type encodingOption = CodecEncoder | encodings
+type EncodingOption = CodecEncoder | Encodings
 
-type subConfig = { name?: string, valueEncoding: encodingOption, keyEncoding: encodingOption }
+interface SubConfig { name?: string, valueEncoding: EncodingOption, keyEncoding: EncodingOption }
 
-export const sublevels: Record<string, subConfig> = {}
+export const sublevels: Record<string, SubConfig> = {}
 
 class LevelDatabase {
   private baseDB: LevelUp
@@ -36,7 +36,7 @@ class LevelDatabase {
       })
   }
 
-  separate ({ name, valueEncoding, keyEncoding }: subConfig): LevelUp {
+  separate ({ name, valueEncoding, keyEncoding }: SubConfig): LevelUp {
     return sub(this.baseDB, name, { valueEncoding, keyEncoding })
   }
 }
