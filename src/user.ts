@@ -1,4 +1,4 @@
-import { observe } from 'koishi-utils'
+import { observe, noop } from 'koishi-utils'
 import { injectMethods, UserData, createUser } from 'koishi-core'
 
 import { sublevels } from './database'
@@ -7,7 +7,7 @@ sublevels.userDB = { keyEncoding: 'json', valueEncoding: 'json' }
 
 injectMethods('level', {
   async getUser (userId, defaultAuthority = 0) {
-    const data = await this.subs.userDB.get(userId).catch(() => undefined) as UserData | void
+    const data = await this.subs.userDB.get(userId).catch(noop) as UserData | void
     let fallback: UserData
     if (data) {
       return data

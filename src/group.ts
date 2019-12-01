@@ -1,4 +1,5 @@
-import { assignees as assigneeIds, injectMethods, GroupData, createGroup, groupFields } from 'koishi-core'
+import { assignees as assigneeIds, injectMethods, GroupData, createGroup } from 'koishi-core'
+import { noop } from 'koishi-utils'
 
 import { sublevels } from './database'
 
@@ -6,7 +7,7 @@ sublevels.groupDB = { keyEncoding: 'json', valueEncoding: 'json' }
 
 injectMethods('level', {
   async getGroup (groupId, selfId = 0): Promise<GroupData> {
-    const data = await this.subs.groupDB.get(groupId).catch(() => undefined) as GroupData | void
+    const data = await this.subs.groupDB.get(groupId).catch(noop) as GroupData | void
     let fallback: GroupData
     if (!data) {
       fallback = createGroup(groupId, selfId)
