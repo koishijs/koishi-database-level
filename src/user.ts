@@ -1,9 +1,13 @@
 import { observe } from 'koishi-utils'
 import { injectMethods, UserData, createUser } from 'koishi-core'
 
+import { sublevels } from './database'
+
+sublevels.userDB = { keyEncoding: 'json', valueEncoding: 'json' }
+
 injectMethods('level', {
   async getUser (userId, defaultAuthority = 0) {
-    const data = await this.userDB.get(userId).catch(() => undefined) as UserData | void
+    const data = await this.subs.userDB.get(userId).catch(() => undefined) as UserData | void
     let fallback: UserData
     if (data) {
       return data
@@ -12,7 +16,7 @@ injectMethods('level', {
     } else {
       fallback = createUser(userId, defaultAuthority)
       if (defaultAuthority) {
-        await this.userDB.put(userId, fallback)
+        await this.subs.userDB.put(userId, fallback)
       }
     }
     return data || fallback
@@ -26,7 +30,7 @@ injectMethods('level', {
   getAllUsers () {
     return new Promise<UserData[]>(resolve => {
       const datas = []
-      this.userDB.createValueStream()
+      this.subs.userDB.createValueStream()
         .on('data', data => {
           datas.push(data)
         })
@@ -37,7 +41,7 @@ injectMethods('level', {
   async setUser (userId, data) {
     const originalData = await this.getUser(userId)
     const newData: UserData = { ...originalData, ...data }
-    await this.userDB.put(userId, newData)
+    await this.subs.userDB.put(userId, newData)
   },
 
   async observeUser (user, defaultAuthority = 0) {
@@ -54,7 +58,7 @@ injectMethods('level', {
   getUserCount () {
     return new Promise<number>(resolve => {
       let userNum = 0
-      this.userDB.createKeyStream()
+      this.subs.userDB.createKeyStream()
         .on('data', () => {
           userNum++
         })

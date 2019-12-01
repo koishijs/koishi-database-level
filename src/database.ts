@@ -19,18 +19,21 @@ type CodecEncoder = {
 
 type encodingOption = CodecEncoder | encodings
 
-type subConfig = { name: string, valueEncoding: encodingOption, keyEncoding: encodingOption }
+type subConfig = { name?: string, valueEncoding: encodingOption, keyEncoding: encodingOption }
+
+export const sublevels: Record<string, subConfig> = {}
 
 class LevelDatabase {
   private baseDB: LevelUp
-  public userDB: LevelUp
-  public groupDB: LevelUp
+  public subs: Record<string, LevelUp>
 
-  constructor ({ path }: LevelConfig) {
+  constructor({ path }: LevelConfig) {
     this.baseDB = levelup(leveldown(path))
 
-    this.userDB = this.separate({ name: 'user', keyEncoding: 'json', valueEncoding: 'json' })
-    this.groupDB = this.separate({ name: 'user', keyEncoding: 'json', valueEncoding: 'json' })
+    Object.entries(sublevels)
+      .forEach(([name, config]) => {
+        this.subs[name] = this.separate({ name, ...config })
+      })
   }
 
   separate ({ name, valueEncoding, keyEncoding }: subConfig): LevelUp {
