@@ -23,11 +23,7 @@ injectMethods('level', {
       const groups: GroupData[] = []
       this.subs.groupDB.createValueStream()
         .on('data', (group: GroupData) => {
-          if (assignees) {
-            if (assignees.includes(group.assignee)) {
-              groups.push(group)
-            }
-          } else {
+          if (assignees.includes(group.assignee)) {
             groups.push(group)
           }
         })
