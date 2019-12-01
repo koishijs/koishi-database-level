@@ -30,10 +30,7 @@ class LevelDatabase {
   constructor({ path }: LevelConfig) {
     this.baseDB = levelup(leveldown(path))
 
-    Object.entries(sublevels)
-      .forEach(([name, config]) => {
-        this.subs[name] = this.separate({ name, ...config })
-      })
+    Object.entries(sublevels).forEach(([name, config]) => this.subs[name] = this.separate({ name, ...config }))
   }
 
   separate ({ name, valueEncoding, keyEncoding }: SubConfig): LevelUp {
