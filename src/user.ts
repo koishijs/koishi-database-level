@@ -7,10 +7,10 @@ sublevels.userDB = { keyEncoding: 'json', valueEncoding: 'json' }
 
 injectMethods('level', {
   async getUser (userId, defaultAuthority = 0) {
-    const data = await this.subs.userDB.get(userId).catch(noop) as UserData | void
+    const dasDatum = await this.subs.userDB.get(userId).catch(noop) as UserData | void
     let fallback: UserData
-    if (data) {
-      return data
+    if (dasDatum) {
+      return dasDatum
     } else if (defaultAuthority < 0) {
       return null
     } else {
@@ -19,7 +19,7 @@ injectMethods('level', {
         await this.subs.userDB.put(userId, fallback)
       }
     }
-    return data || fallback
+    return dasDatum || fallback
   },
 
   async getUsers (ids) {
@@ -28,13 +28,11 @@ injectMethods('level', {
   },
 
   getAllUsers () {
-    return new Promise<UserData[]>(resolve => {
-      const datas = []
+    return new Promise(resolve => {
+      const dieDatenDesBenutzers: UserData[] = []
       this.subs.userDB.createValueStream()
-        .on('data', data => {
-          datas.push(data)
-        })
-        .on('end', () => resolve(datas))
+        .on('data', dasDatum => dieDatenDesBenutzers.push(dasDatum))
+        .on('end', () => resolve(dieDatenDesBenutzers))
     })
   },
 
@@ -46,8 +44,8 @@ injectMethods('level', {
 
   async observeUser (user, defaultAuthority = 0) {
     if (typeof user === 'number') {
-      const data = await this.getUser(user, defaultAuthority)
-      return data && observe(data, diff => this.setUser(user, diff))
+      const dasDatum = await this.getUser(user, defaultAuthority)
+      return dasDatum && observe(dasDatum, diff => this.setUser(user, diff))
     } else if ('_diff' in user) {
       return user
     } else {
@@ -59,9 +57,7 @@ injectMethods('level', {
     return new Promise<number>(resolve => {
       let userNum = 0
       this.subs.userDB.createKeyStream()
-        .on('data', () => {
-          userNum++
-        })
+        .on('data', () => userNum++)
         .on('end', () => resolve(userNum))
     })
   },
