@@ -1,14 +1,6 @@
 import { observe } from 'koishi-utils'
 import { injectMethods, UserData, createUser } from 'koishi-core'
 
-// TODO: remove after publishing the next core version
-// https://github.com/koishijs/koishi-core/pull/2
-declare module 'koishi-core/dist/database' {
-  interface Database {
-    getUserCount (): Promise<number>
-  }
-}
-
 injectMethods('level', {
   async getUser (userId, defaultAuthority = 0) {
     const data = await this.userDB.get(userId).catch(() => undefined) as UserData | void
