@@ -7,7 +7,11 @@
   ],
   "scripts": {
     "jest": "jest tests/.*\\.spec\\.ts",
-    "lint": "eslint src --ext .ts"
+    "lint": "eslint src --ext .ts",
+    "test": "npm run clear; npm run unit",
+    "unit": "nyc mocha --reporter=landing -r ts-node/register test/*.ts",
+    "clear": "rm -rf ./db;exit 0",
+    "coverage": "mkdir coverage; nyc report --reporter=text-lcov >> ./coverage/lcov.info"
   },
   "repository": {
     "type": "git",
@@ -20,17 +24,24 @@
   },
   "homepage": "https://github.com/koishijs/koishi-database-level#readme",
   "devDependencies": {
+    "@types/chai": "^4.2.6",
     "@types/leveldown": "^4.0.2",
     "@types/levelup": "^3.1.1",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.14",
     "@typescript-eslint/eslint-plugin": "^2.9.0",
     "@typescript-eslint/parser": "^2.9.0",
+    "chai": "^4.2.0",
+    "coveralls": "^3.0.9",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
+    "mocha": "^6.2.2",
+    "nyc": "^14.1.1",
     "standard": "^14.3.1",
+    "ts-node": "^8.5.4",
     "typescript": "^3.7.2"
   },
   "dependencies": {
@@ -39,5 +50,15 @@
     "leveldown": "^5.4.1",
     "levelup": "^4.3.2",
     "subleveldown": "^4.1.4"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "sourceMap": true,
+    "instrument": true
   }
 }
