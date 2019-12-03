@@ -25,7 +25,7 @@ export const sublevels: Record<string, SubConfig> = {}
 
 class LevelDatabase {
   private baseDB: LevelUp
-  public subs: Record<string, LevelUp>
+  public subs: Record<string, LevelUp> = {}
 
   constructor({ path }: LevelConfig) {
     this.baseDB = levelup(leveldown(path))
