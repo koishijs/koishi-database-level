@@ -48,7 +48,7 @@ class LevelDatabase {
   count (subDatabaseName: 'groupDB' | 'userDB') {
     return new Promise<number>(resolve => {
       let userNum = 0
-      this.subs.userDB.createKeyStream()
+      this.subs[subDatabaseName].createKeyStream()
         .on('data', () => userNum++)
         .on('end', () => resolve(userNum))
     })
