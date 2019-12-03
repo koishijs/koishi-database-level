@@ -1,6 +1,8 @@
+import { resolve } from 'path'
+
 import { registerSubdatabase } from 'koishi-core'
 
-import leveldown from 'leveldown'
+import leveldown, { LevelDown } from 'leveldown'
 import levelup, { LevelUp } from 'levelup'
 import sub from 'subleveldown'
 
@@ -23,12 +25,18 @@ interface SubConfig { name?: string, valueEncoding: EncodingOption, keyEncoding:
 
 export const sublevels: Record<string, SubConfig> = {}
 
+const openedDBs = new Map<string, LevelUp<LevelDown>>()
+
 class LevelDatabase {
   private baseDB: LevelUp
   public subs: Record<string, LevelUp> = {}
 
   constructor({ path }: LevelConfig) {
-    this.baseDB = levelup(leveldown(path))
+    const absPath = resolve(path)
+    if (!openedDBs.has(absPath)) {
+      openedDBs.set(absPath, levelup(leveldown(absPath)))
+    }
+    this.baseDB = openedDBs.get(absPath)
 
     Object.entries(sublevels).forEach(([name, config]) => this.subs[name] = this.separate({ name, ...config }))
   }
