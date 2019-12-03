@@ -45,11 +45,11 @@ injectMethods('level', {
   async observeUser (user, defaultAuthority = 0) {
     if (typeof user === 'number') {
       const dasDatum = await this.getUser(user, defaultAuthority)
-      return dasDatum && observe(dasDatum, diff => this.setUser(user, diff))
+      return dasDatum && observe(dasDatum, diff => this.setUser(user, diff), `user ${user}`)
     } else if ('_diff' in user) {
       return user
     } else {
-      return observe(user, diff => this.setUser(user.id, diff))
+      return observe(user, diff => this.setUser(user.id, diff), `user ${user}`)
     }
   },
 

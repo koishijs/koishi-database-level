@@ -1,5 +1,5 @@
 import { selfIds, injectMethods, GroupData, createGroup } from 'koishi-core'
-import { noop } from 'koishi-utils'
+import { noop, observe } from 'koishi-utils'
 
 import { sublevels } from './database'
 
@@ -38,7 +38,18 @@ injectMethods('level', {
     await this.subs.groupDB.put(groupId, newData)
   },
 
+  async observeGroup (group, selfId = 0) {
+    if (typeof group === 'number') {
+      const data = await this.getGroup(group, selfId)
+      return data && observe(data, diff => this.setGroup(group, diff), `group ${group}`)
+    } else if ('_diff' in group) {
+      return group
+    } else {
+      return observe(group, diff => this.setGroup(group.id, diff), `group ${group.id}`)
+    }
+  },
+
   getGroupCount () {
     return this.count('groupDB')
-  }
+  },
 })

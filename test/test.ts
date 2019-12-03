@@ -107,6 +107,18 @@ describe('LEVEL', function () {
       assert.isNumber(groups[num - 1].id)
     })
 
+    it('observeGroup diff update', async function () {
+      const id = 2
+      const flag = 823
+
+      const observableGroup = await app.database.observeGroup(id)
+      observableGroup.flag = 823
+      await observableGroup._update()
+
+      const group = await app.database.getGroup(id)
+      assert.strictEqual(flag, group.flag)
+    })
+
     it('getGroupCount', async function () {
       const num = 133
       await Promise.all(Array(num).fill(undefined).map((_, i) => app.database.getGroup(i + 1, 1)))
