@@ -44,6 +44,15 @@ class LevelDatabase {
   separate ({ name, valueEncoding, keyEncoding }: SubConfig): LevelUp {
     return sub(this.baseDB, name, { valueEncoding, keyEncoding })
   }
+
+  count (subDatabaseName: 'groupDB' | 'userDB') {
+    return new Promise<number>(resolve => {
+      let userNum = 0
+      this.subs.userDB.createKeyStream()
+        .on('data', () => userNum++)
+        .on('end', () => resolve(userNum))
+    })
+  }
 }
 
 registerSubdatabase('level', LevelDatabase)

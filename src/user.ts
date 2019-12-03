@@ -54,11 +54,6 @@ injectMethods('level', {
   },
 
   getUserCount () {
-    return new Promise<number>(resolve => {
-      let userNum = 0
-      this.subs.userDB.createKeyStream()
-        .on('data', () => userNum++)
-        .on('end', () => resolve(userNum))
-    })
+    return this.count('userDB')
   },
 })

@@ -1,4 +1,4 @@
-import { assignees as assigneeIds, injectMethods, GroupData, createGroup } from 'koishi-core'
+import { selfIds, injectMethods, GroupData, createGroup } from 'koishi-core'
 import { noop } from 'koishi-utils'
 
 import { sublevels } from './database'
@@ -19,7 +19,7 @@ injectMethods('level', {
     return data || fallback
   },
 
-  getAllGroups (_, assignees = assigneeIds) {
+  getAllGroups (_, assignees = selfIds) {
     return new Promise<GroupData[]>(resolve => {
       const groups: GroupData[] = []
       this.subs.groupDB.createValueStream()
@@ -37,4 +37,8 @@ injectMethods('level', {
     const newData: GroupData = { ...originalData, ...data }
     await this.subs.groupDB.put(groupId, newData)
   },
+
+  getGroupCount () {
+    return this.count('groupDB')
+  }
 })
