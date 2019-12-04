@@ -3,6 +3,11 @@ import { createApp } from 'koishi-core'
 
 import { assert } from 'chai'
 
+declare const describe
+declare const context
+declare const it
+declare const afterEach
+
 const newApp = () => createApp({
   database: {
     level: { path: './db' },
@@ -80,7 +85,7 @@ describe('LEVEL', function () {
   })
 
   context('group', function () {
-    beforeEach(async function () {
+    afterEach(async function () {
       // @ts-ignore
       await app.database.level.subs.groupDB.clear()
     })
